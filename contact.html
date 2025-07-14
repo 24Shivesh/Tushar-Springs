@@ -254,48 +254,85 @@
               <div class="hidden md:block"></div>
           
               <!-- Contact Form -->
-              <div>
-                <form id="contact-form-s2" class="space-y-6">
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label for="f-name" class="block text-sm font-medium text-gray-700">First Name</label>
-                      <input type="text" id="f-name" name="f_name" class="mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                      <label for="l-name" class="block text-sm font-medium text-gray-700">Last Name</label>
-                      <input type="text" id="l-name" name="l_name" class="mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                  </div>
-          
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                      <input type="email" id="email" name="email" class="mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                      <label for="phone" class="block text-sm font-medium text-gray-700">Phone No</label>
-                      <input type="text" id="phone" name="phone" class="mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                  </div>
-          
-                  <div>
-                    <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
-                    <textarea id="message" name="note" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
-                  </div>
-          
-                  <div class="flex items-center justify-between">
-                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">Submit</button>
-                    <div id="loader" class="hidden">
-                      <i class="fa fa-refresh fa-spin text-blue-600 text-2xl"></i>
-                    </div>
-                  </div>
-          
-                  <div class="text-sm pt-2">
-                    <div id="success" class="hidden text-green-600">Thank you</div>
-                    <div id="error" class="hidden text-red-600">Error occurred while sending email. Please try again later.</div>
-                  </div>
-                </form>
-              </div>
+              <!-- Contact Form with Tailwind -->
+<div>
+  <form id="contactForm" class="space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+        <input type="text" id="name" name="name" class="mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" required>
+      </div>
+      <div>
+        <label for="mobile" class="block text-sm font-medium text-gray-700">Phone No</label>
+        <input type="text" id="mobile" name="mobile" class="mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" required>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="sm:col-span-2">
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" id="email" name="email" class="mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" required>
+      </div>
+    </div>
+
+    <div>
+      <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+      <textarea id="message" name="message" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" required></textarea>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">Submit</button>
+      <div id="loader" class="hidden">
+        <i class="fa fa-refresh fa-spin text-blue-600 text-2xl"></i>
+      </div>
+    </div>
+
+    <div class="text-sm pt-2" id="statusMessage"></div>
+  </form>
+</div>
+
+<!-- Bootstrap 5 + EmailJS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+  (function () {
+    emailjs.init("g01dF8aLHZmIKrYAs"); // Replace with your EmailJS public key
+  })();
+
+  document.getElementById("contactForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    // Show loader
+    document.getElementById("loader").classList.remove("hidden");
+    document.getElementById("statusMessage").innerHTML = "";
+
+    const name = document.getElementById("name").value;
+    const mobile = document.getElementById("mobile").value;
+    const email = document.getElementById("email").value;
+    const message = document.getElementById("message").value;
+
+    const templateParams = {
+      name: name,
+      mobile: mobile,
+      email: email,
+      message: message,
+    };
+
+    emailjs.send("service_rjy96qj", "template_t69xoss", templateParams)
+      .then(function (response) {
+        document.getElementById("statusMessage").innerHTML =
+          '<div class="text-green-600">Message sent successfully!</div>';
+      }, function (error) {
+        document.getElementById("statusMessage").innerHTML =
+          '<div class="text-red-600">Failed to send message. Please try again later.</div>';
+      })
+      .finally(() => {
+        document.getElementById("loader").classList.add("hidden");
+        document.getElementById("contactForm").reset();
+      });
+  });
+</script>
+
             </div>
           </section>
           

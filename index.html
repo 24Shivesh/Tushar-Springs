@@ -746,50 +746,93 @@ SPRINGS” are a Sole Proprietorship based firm, engaged as the foremost manufac
       
             <!-- 📝 Request a Quote Form -->
             <div class="bg-white p-8 rounded-lg shadow-lg">
-              <h2 class="text-3xl font-bold text-gray-800 mb-4">Request a Quote</h2>
-              <p class="text-gray-600 mb-6">For detailed enquiries about our products, feel free to contact us or request a quote.</p>
-      
-              <form action="send-data.php" method="POST" class="space-y-5">
-                <div>
-                  <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                  <input type="text" name="name" id="name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
-                </div>
-      
-                <div>
-                  <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                  <input type="email" name="email" id="email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
-                </div>
-      
-                <div>
-                  <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
-                  <input type="text" name="phone" id="phone" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
-                </div>
-      
-                <div>
-                  <label for="product" class="block text-sm font-medium text-gray-700">Product Name</label>
-                  <select name="select" id="product" class="text-gray-600 mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option selected disabled>-- Select One --</option>
-                    <option value="Compression Spring">Compression Spring</option>
-                    <option value="Conical Spring">Conical Spring</option>
-                    <option value="Torsion Spring">Torsion Spring</option>
-                    <option value="Double Torsion">Double Torsion</option>
-                    <option value="Tension Spring">Tension Spring</option>
-                    <option value="Wire Forms">Wire Forms</option>
-                    <option value="Wire Hose">Wire Hose Clamps</option>
-                    <option value="Garter Spring">Garter Spring</option>
-                  </select>
-                </div>
-      
-                <div class="pt-4">
-                  <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
-                    Submit
-                  </button>
-                  <div id="loader" class="mt-4 hidden text-center text-blue-500">
-                    <i class="fa fa-refresh fa-spin fa-lg"></i>
-                  </div>
-                </div>
-              </form>
-            </div>
+  <h2 class="text-3xl font-bold text-gray-800 mb-4">Request a Quote</h2>
+  <p class="text-gray-600 mb-6">For detailed enquiries about our products, feel free to contact us or request a quote.</p>
+
+  <form id="quoteForm" class="space-y-5">
+    <div>
+      <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+      <input type="text" name="name" id="name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <div>
+      <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+      <input type="email" name="email" id="email" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <div>
+      <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+      <input type="text" name="phone" id="phone" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <div>
+      <label for="product" class="block text-sm font-medium text-gray-700">Product Name</label>
+      <select name="product" id="product" required class="text-gray-600 mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
+        <option selected disabled value="">-- Select One --</option>
+        <option value="Compression Spring">Compression Spring</option>
+        <option value="Conical Spring">Conical Spring</option>
+        <option value="Torsion Spring">Torsion Spring</option>
+        <option value="Double Torsion">Double Torsion</option>
+        <option value="Tension Spring">Tension Spring</option>
+        <option value="Wire Forms">Wire Forms</option>
+        <option value="Wire Hose">Wire Hose Clamps</option>
+        <option value="Garter Spring">Garter Spring</option>
+      </select>
+    </div>
+
+    <div class="pt-4">
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
+        Submit
+      </button>
+      <div id="loader" class="mt-4 hidden text-center text-blue-500">
+        <i class="fa fa-refresh fa-spin fa-lg"></i>
+      </div>
+    </div>
+
+    <div id="statusMessage" class="pt-2 text-sm text-center"></div>
+  </form>
+</div>
+
+<!-- EmailJS and JS Integration -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+  (function () {
+    emailjs.init("g01dF8aLHZmIKrYAs"); // Replace with your public EmailJS key
+  })();
+
+  document.getElementById("quoteForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    document.getElementById("loader").classList.remove("hidden");
+    document.getElementById("statusMessage").innerHTML = "";
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const phone = document.getElementById("phone").value;
+    const product = document.getElementById("product").value;
+
+    const templateParams = {
+      name: name,
+      email: email,
+      phone: phone,
+      product: product,
+    };
+
+    emailjs.send("service_rjy96qj", "template_zrp3eg4", templateParams)
+      .then(function (response) {
+        document.getElementById("statusMessage").innerHTML =
+          '<div class="text-green-600">Quote request sent successfully!</div>';
+      }, function (error) {
+        document.getElementById("statusMessage").innerHTML =
+          '<div class="text-red-600">Failed to send. Please try again later.</div>';
+      })
+      .finally(() => {
+        document.getElementById("loader").classList.add("hidden");
+        document.getElementById("quoteForm").reset();
+      });
+  });
+</script>
+
           </div>
         </div>
       </section>
